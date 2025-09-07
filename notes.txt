@@ -1,0 +1,2 @@
+i need a vad, turn detection, and diarizer
+i also need to stream them in chunks to get faster results 

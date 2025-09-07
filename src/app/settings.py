@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     base_url="https://router.huggingface.co/v1",
     api_key=os.environ["HF_TOKEN"],
     )
-    brain_model: str = "openai/gpt-oss-120b:cerebras"
+    brain_model: str = "openai/gpt-oss-20b:cerebras"
 
 
     

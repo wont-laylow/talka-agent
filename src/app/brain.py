@@ -6,23 +6,28 @@ client = settings.client
 model = settings.brain_model
 
 
-def chat_brain(input_text: str):
-    
+def brain_reply(input_text: str): 
     completion = client.chat.completions.create(
         model= model,
         messages=[
             {
+                "role": "system", 
+                "content": "You are a helpful assistant who answers questions briefly."
+            },
+
+            {
                 "role": "user",
                 "content": input_text,
-            }
-        ],
+            },
+        ]
     )
 
     brain_output = completion.choices[0].message
-
-    return brain_output.reasoning, brain_output.content
+    print(f"Brain Reply: {brain_reply}\n")
+    return brain_output.content
 
 
 if __name__ == "__main__":
-    test_input = "Hello, how are you?"
-    print(chat_brain(test_input))
+    test_input = "Tell me about the capital of France?"
+    print(brain_reply(test_input))
+    

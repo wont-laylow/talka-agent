@@ -4,29 +4,36 @@ import torch
 import os
 import json
 import numpy as np
-import soundfile as sf
 import sounddevice as sd
+from huggingface_hub import login
+from dotenv import load_dotenv
 
 
-BASE_PATH = "/home/azureuser/project/model_bases"
-MODEL_DIR = "koroko/"
-koroko_path = os.path.join(BASE_PATH, MODEL_DIR)
-os.makedirs(koroko_path, exist_ok=True)
+load_dotenv(override=True)
+login(token=os.environ["HF_TOKEN"])
 
 
-def dowload_koroko_model():
+BASE_PATH = "C:/Users/DeLL/Desktop/anything_py/talka-agent/model_bases"
+MODEL_DIR = "kokoro/"
+kokoro_path = os.path.join(BASE_PATH, MODEL_DIR)
+os.makedirs(kokoro_path, exist_ok=True)
+
+
+def dowload_kokoro_model():
     pipeline = KPipeline(lang_code='a') 
-    torch.save(pipeline.model, os.path.join(koroko_path, "pytorch_model.bin"))
+    torch.save(pipeline.model, os.path.join(kokoro_path, "pytorch_model.bin"))
 
     # Save config
     config = {
         "lang_code": "a",
         "voice": "af_heart"
     }
-    json.dump(config, open(os.path.join(koroko_path, "config.json"), "w"))
+    json.dump(config, open(os.path.join(kokoro_path, "config.json"), "w"))
 
 
-def load_koroko_pipeline(model_path, config_path):
+def load_kokoro_pipeline():
+    config_path = os.path.join(kokoro_path, "config.json")
+    model_path = os.path.join(kokoro_path, "pytorch_model.bin")
 
     with open(config_path) as f:
         config = json.load(f)
@@ -39,8 +46,9 @@ def load_koroko_pipeline(model_path, config_path):
     return pipeline, config
 
 
-def infer_and_play(pipeline, config, test_text: str, rate: int = 24000):
-    """Run inference, concatenate audio, and play it in terminal."""
+def speech_output(test_text: str):
+
+    pipeline, config = load_kokoro_pipeline()
     generator = pipeline(test_text, voice=config.get("voice", "af_heart"))
 
     audio_chunks = []
@@ -51,17 +59,8 @@ def infer_and_play(pipeline, config, test_text: str, rate: int = 24000):
     full_audio = np.concatenate(audio_chunks)
 
     # Play audio
-    sd.play(full_audio, samplerate=rate)
+    sd.play(full_audio, samplerate=24000)
     sd.wait()  
 
     return full_audio
 
-
-
-if __name__ == "__main__":
-    config_path = os.path.join(koroko_path, "config.json")
-    model_path = os.path.join(koroko_path, "pytorch_model.bin")
-
-    pipeline, config = load_koroko_pipeline(model_path, config_path)
-    test_text = "Hello world, this is Koroko speaking!"
-    infer_and_play(pipeline, config, test_text)
