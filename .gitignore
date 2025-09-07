@@ -1,0 +1,7 @@
+notebooks/
+model_bases/
+work_tests/
+pyproject.toml
+__pycache__/
+*.pyc
+.env
