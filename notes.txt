@@ -1,2 +1,5 @@
 i need a vad, turn detection, and diarizer
-i also need to stream them in chunks to get faster results 
+i also need to stream them in chunks to get faster results
+Current output is really slow to my liking. will continue tomorrow
+I will also work on the recording aspect as well, before proceeding to advanced capabilities. 
+i think i might use onnx to speed up model capabilities

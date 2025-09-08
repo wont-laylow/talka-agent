@@ -49,20 +49,14 @@ def load_kokoro_pipeline():
 def speech_output(test_text: str):
 
     pipeline, config = load_kokoro_pipeline()
-    generator = pipeline(test_text, voice=config.get("voice", "af_heart"))
+    generator = pipeline(test_text, voice=config.get("voice", "af_heart"), split_pattern=r'\n+')
 
-    audio_chunks = []
     for i, (gs, ps, audio) in enumerate(generator):
-        print(i, gs, ps)
-        audio_chunks.append(audio)
-
-    full_audio = np.concatenate(audio_chunks)
-
-    # Play audio
-    sd.play(full_audio, samplerate=24000)
-    sd.wait()  
-
-    return full_audio
+        fade_len = min(100, len(audio))  # first 100 samples
+        audio[:fade_len] *= np.linspace(0, 1, fade_len)
+        
+        sd.play(audio, samplerate=24000)
+        sd.wait() 
 
 if __name__ == "__main__":
     dowload_kokoro_model()
