@@ -64,3 +64,6 @@ def speech_output(test_text: str):
 
     return full_audio
 
+if __name__ == "__main__":
+    dowload_kokoro_model()
+    
